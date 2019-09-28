@@ -25,6 +25,10 @@ CA:=-o /dev/null -s -w "%{http_code}\n"
 
 all: build
 
+.PHONY: ssh
+ssh:
+	docker-compose exec web bash
+
 .PHONY: clean
 clean:
 	cd $(BUILD_DIR); \
