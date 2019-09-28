@@ -123,13 +123,12 @@ slow-off:
 .PHONY: setup
 setup:
 	sudo apt install -y percona-toolkit dstat git unzip snapd
-	git config --global user.email "tohu.soy@gmail.com"
-	git config --global user.name "tohutohu"
-	wget https://github.com/matsuu/kataribe/releases/download/v0.4.1/kataribe-v0.4.1_linux_amd64.zip -O kataribe.zip
-	unzip -o kataribe.zip
-	sudo mv kataribe /usr/local/bin/
+	mkdir kataribe
+	wget https://github.com/matsuu/kataribe/releases/download/v0.4.1/kataribe-v0.4.1_linux_amd64.zip -O kataribe/kataribe.zip
+	unzip -o kataribe/kataribe.zip -d kataribe
+	sudo mv kataribe/kataribe /usr/local/bin/
 	sudo chmod +x /usr/local/bin/kataribe
-	rm kataribe.zip
+	rm -rf kataribe/
 	kataribe -generate
 	wget https://github.com/KLab/myprofiler/releases/download/0.2/myprofiler.linux_amd64.tar.gz
 	tar xf myprofiler.linux_amd64.tar.gz
