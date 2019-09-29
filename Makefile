@@ -1,9 +1,9 @@
 export GO111MODULE=on
-DB_HOST:=127.0.0.1
+DB_HOST:=db
 DB_PORT:=3306
-DB_USER:=isucari
-DB_PASS:=isucari
-DB_NAME:=isucari
+DB_USER:=root
+DB_PASS:=pass
+DB_NAME:=isucon
 
 MYSQL_CMD:=mysql -h$(DB_HOST) -P$(DB_PORT) -u$(DB_USER) -p$(DB_PASS) $(DB_NAME)
 
@@ -110,15 +110,17 @@ pprof:
 	$(PPROF)
 	$(SLACKRAW) -n pprof.png ./pprof.png
 
+.PHONY: mysql
+mysql:
+	sudo $(MYSQL_CMD) 
+
 .PHONY: slow-on
 slow-on:
-	sudo mysql -e "set global slow_query_log_file = '$(MYSQL_LOG)'; set global long_query_time = 0; set global slow_query_log = ON;"
-	# sudo $(MYSQL_CMD) -e "set global slow_query_log_file = '$(MYSQL_LOG)'; set global long_query_time = 0; set global slow_query_log = ON;"
+	sudo $(MYSQL_CMD) -e "set global slow_query_log_file = '$(MYSQL_LOG)'; set global long_query_time = 0; set global slow_query_log = ON;"
 
 .PHONY: slow-off
 slow-off:
-	sudo mysql -e "set global slow_query_log = OFF;"
-	# sudo $(MYSQL_CMD) -e "set global slow_query_log = OFF;"
+	sudo $(MYSQL_CMD) -e "set global slow_query_log = OFF;"
 
 .PHONY: setup
 setup:
