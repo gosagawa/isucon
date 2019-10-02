@@ -26,14 +26,14 @@ CA:=-o /dev/null -s -w "%{http_code}\n"
 all: build
 
 .PHONY: ssh
-sshweb:
+ssh:
 	docker-compose exec web bash
 
 sshdb:
 	docker-compose exec db bash
 
 sshproxy:
-	docker-compose exec db bash
+	docker-compose exec proxy bash
 
 .PHONY: clean
 clean:
@@ -48,7 +48,7 @@ deps:
 build:
 	cd $(BUILD_DIR); \
 	go build -o $(BIN_NAME)
-	#TODO
+	#TODO ビルドコマンドを正しいものに直す
 
 .PHONY: restart
 restart:
@@ -59,7 +59,6 @@ restart:
 test:
 	curl localhost $(CA)
 
-# ここから元から作ってるやつ
 .PHONY: dev
 dev: build 
 	cd $(BUILD_DIR); \
