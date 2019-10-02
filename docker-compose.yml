@@ -1,21 +1,38 @@
 version: '3'
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
     ports:
       - 8080:8080
     volumes:
-      - .:/usr/src/app
-    working_dir: "/usr/src/app"
+      - $GOPATH/src:/go/src
+      - ./mysql/log:/var/log/mysql
+    working_dir: "/go/src/github.com/gosagawa/isucon"
+    environment:
+      - VIRTUAL_HOST=local.isucon.com
+      - VIRTUAL_PORT=8080
+    command: bash -c "/go/wait-for-it/wait-for-it.sh db:3306 -- goose up; realize start --name='isucon' --run"
     depends_on:
       - 'db'
     tty: true
     privileged: true
   db:
-    image: mysql:5.7
+    build:
+      context: .
+      dockerfile: ./docker/db/Dockerfile
     command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
     volumes:
       - ./mysql/data:/var/lib/mysql
+      - ./mysql/log:/var/log/mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: isucon
+  proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro

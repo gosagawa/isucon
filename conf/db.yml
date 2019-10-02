@@ -1,0 +1,6 @@
+driver: mysql
+development:
+  host     : "db"
+  user: "root"
+  password: "pass"
+  db: "isucon"

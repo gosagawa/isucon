@@ -32,3 +32,5 @@ token issued:xoxp-XXXXXXX（事前準備で準備したslackcatのトークン�
 
 その後.slackcatファイルを変更して、default_channnelに投稿したいチャンネルを設定する。
 
+## pprofの設定
+
