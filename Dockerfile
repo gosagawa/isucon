@@ -11,3 +11,4 @@ RUN apt-get install -y mysql-client
 RUN go get -u bitbucket.org/liamstask/goose/cmd/goose
 RUN git clone https://github.com/vishnubob/wait-for-it
 RUN go get -u github.com/tockins/realize
+

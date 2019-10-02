@@ -17,9 +17,9 @@ SLACKRAW:=slackcat --channel general
 
 PPROF:=go tool pprof -png -output pprof.png http://localhost:6060/debug/pprof/profile
 
-PROJECT_ROOT:=/home/isucon/isucari
-BUILD_DIR:=/home/isucon/isucari/webapp/go
-BIN_NAME:=isucari
+PROJECT_ROOT:=/go/src/github.com/gosagawa/isucon
+BUILD_DIR:=/go/src/github.com/gosagawa/isucon
+BIN_NAME:=bin/isucon
 
 CA:=-o /dev/null -s -w "%{http_code}\n"
 

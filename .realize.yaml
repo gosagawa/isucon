@@ -1,0 +1,23 @@
+settings:
+  legacy:
+    force: false
+    interval: 0s
+schema:
+- name: isucon
+  path: .
+  commands:
+    install:
+      status: true
+      method: go build -o bin/isucon
+    run:
+      status: true
+      method: bin/isucon
+  watcher:
+    extensions:
+    - go
+    paths:
+    - /
+    ignored_paths:
+    - .git
+    - .realize
+    - vendor

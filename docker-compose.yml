@@ -5,8 +5,12 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - .:/usr/src/app
-    working_dir: "/usr/src/app"
+      - $GOPATH/src:/go/src
+    working_dir: "/go/src/github.com/gosagawa/isucon"
+    environment:
+      - VIRTUAL_HOST=local.isucon.com
+      - VIRTUAL_PORT=8080
+    command: bash -c "/go/wait-for-it/wait-for-it.sh db:3306 -- goose up; realize start --name='isucon' --run"
     depends_on:
       - 'db'
     tty: true
@@ -20,3 +24,9 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: pass
       MYSQL_DATABASE: isucon
+  proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
