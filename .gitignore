@@ -1,3 +1,7 @@
 mysql/*
 vendor/*
+bin/*
 !.gitkeep
+isucon
+kataribe.toml
+pprof.png

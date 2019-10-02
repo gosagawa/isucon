@@ -2,9 +2,9 @@ package main
 
 import (
 	"flag"
-	"log"
 	"net/http"
 
+	"net/http/pprof"
 	_ "net/http/pprof"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -19,9 +19,8 @@ func main() {
 	rooter(goji.DefaultMux)
 	goji.Serve()
 
-	go func() {
-		log.Println(http.ListenAndServe("localhost:6060", nil))
-	}()
+	pprofMux := web.New()
+	pprofMux.Get("/debug/pprof/", http.HandlerFunc(pprof.Index))
 }
 
 func rooter(m *web.Mux) http.Handler {

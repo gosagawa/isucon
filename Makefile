@@ -8,14 +8,14 @@ DB_NAME:=isucon
 MYSQL_CMD:=mysql -h$(DB_HOST) -P$(DB_PORT) -u$(DB_USER) -p$(DB_PASS) $(DB_NAME)
 
 NGX_LOG:=/tmp/access.log
-MYSQL_LOG:=/tmp/slow-query.log
+MYSQL_LOG:=/var/log/mysql/mysql_slow.log
 
 KATARU_CFG:=./kataribe.toml
 
 SLACKCAT:=slackcat --tee --channel general
 SLACKRAW:=slackcat --channel general 
 
-PPROF:=go tool pprof -png -output pprof.png http://localhost:6060/debug/pprof/profile
+PPROF:=go tool pprof -png -output pprof.png http://localhost:8080/debug/pprof/profile
 
 PROJECT_ROOT:=/go/src/github.com/gosagawa/isucon
 BUILD_DIR:=/go/src/github.com/gosagawa/isucon
@@ -26,8 +26,11 @@ CA:=-o /dev/null -s -w "%{http_code}\n"
 all: build
 
 .PHONY: ssh
-ssh:
+sshweb:
 	docker-compose exec web bash
+
+sshdb:
+	docker-compose exec db bash
 
 .PHONY: clean
 clean:

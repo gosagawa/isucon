@@ -1,11 +1,14 @@
 version: '3'
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
     ports:
       - 8080:8080
     volumes:
       - $GOPATH/src:/go/src
+      - ./mysql/log:/var/log/mysql
     working_dir: "/go/src/github.com/gosagawa/isucon"
     environment:
       - VIRTUAL_HOST=local.isucon.com
@@ -16,10 +19,13 @@ services:
     tty: true
     privileged: true
   db:
-    image: mysql:5.7
+    build:
+      context: .
+      dockerfile: ./docker/db/Dockerfile
     command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
     volumes:
       - ./mysql/data:/var/lib/mysql
+      - ./mysql/log:/var/log/mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: pass
