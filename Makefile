@@ -7,7 +7,7 @@ DB_NAME:=isucon
 
 MYSQL_CMD:=mysql -h$(DB_HOST) -P$(DB_PORT) -u$(DB_USER) -p$(DB_PASS) $(DB_NAME)
 
-NGX_LOG:=/tmp/access.log
+NGX_LOG:=/var/log/nginx/access.log
 MYSQL_LOG:=/var/log/mysql/mysql_slow.log
 
 KATARU_CFG:=./kataribe.toml
@@ -32,6 +32,9 @@ sshweb:
 sshdb:
 	docker-compose exec db bash
 
+sshproxy:
+	docker-compose exec db bash
+
 .PHONY: clean
 clean:
 	cd $(BUILD_DIR); \
@@ -49,7 +52,8 @@ build:
 
 .PHONY: restart
 restart:
-	sudo systemctl restart isucari.golang.service
+
+	#TODO リスタートコマンドがあれば記載
 
 .PHONY: test
 test:

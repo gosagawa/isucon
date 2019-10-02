@@ -1,5 +1,16 @@
 version: '3'
 services:
+  proxy:
+    image: nginx:latest
+    container_name: 'proxy'
+    volumes:
+      - ./nginx/conf:/etc/nginx/
+      - ./nginx/log:/var/log/nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - 'web'
+    restart: always
   web:
     build:
       context: .
@@ -9,10 +20,8 @@ services:
     volumes:
       - $GOPATH/src:/go/src
       - ./mysql/log:/var/log/mysql
+      - ./nginx/log:/var/log/nginx
     working_dir: "/go/src/github.com/gosagawa/isucon"
-    environment:
-      - VIRTUAL_HOST=local.isucon.com
-      - VIRTUAL_PORT=8080
     command: bash -c "/go/wait-for-it/wait-for-it.sh db:3306 -- goose up; realize start --name='isucon' --run"
     depends_on:
       - 'db'
@@ -30,9 +39,3 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: pass
       MYSQL_DATABASE: isucon
-  proxy:
-    image: jwilder/nginx-proxy
-    ports:
-      - "80:80"
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
