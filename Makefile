@@ -12,8 +12,8 @@ MYSQL_LOG:=/var/log/mysql/mysql_slow.log
 
 KATARU_CFG:=./kataribe.toml
 
-SLACKCAT:=slackcat --tee --channel general
-SLACKRAW:=slackcat --channel general 
+SLACKCAT:=slackcat --tee --channel 勉強会
+SLACKRAW:=slackcat --channel 勉強会
 
 PPROF:=go tool pprof -png -output pprof.png http://localhost:8080/debug/pprof/profile
 
@@ -25,6 +25,9 @@ CA:=-o /dev/null -s -w "%{http_code}\n"
 
 all: build
 
+# デバッグおよび負荷試験用。実際の競技時には不要。
+# ここから -------------------------------------------------
+
 .PHONY: ssh
 ssh:
 	docker-compose exec web bash
@@ -34,6 +37,15 @@ sshdb:
 
 sshproxy:
 	docker-compose exec proxy bash
+
+.PHONY: st
+st:
+	echo "GET http://localhost:8080/user/index" | vegeta attack -rate=100 -duration=5s | tee vegeta/result/result.bin
+
+stresult:
+	vegeta report vegeta/result/result.bin
+
+# ここまで -------------------------------------------------
 
 .PHONY: clean
 clean:

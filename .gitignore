@@ -1,6 +1,8 @@
 mysql/*
 vendor/*
 bin/*
+vegeta/result/*
+nginx/log/*
 !.gitkeep
 isucon
 kataribe.toml
