@@ -12,8 +12,8 @@ MYSQL_LOG:=/var/log/mysql/mysql_slow.log
 
 KATARU_CFG:=./kataribe.toml
 
-SLACKCAT:=slackcat --tee --channel 勉強会
-SLACKRAW:=slackcat --channel 勉強会
+SLACKCAT:=slackcat --tee --channel slacktest
+SLACKRAW:=slackcat --channel slacktest
 
 PPROF:=go tool pprof -png -output pprof.png http://localhost:8080/debug/pprof/profile
 
@@ -40,10 +40,10 @@ sshproxy:
 
 .PHONY: st
 st:
-	echo "GET http://localhost:8080/user/index" | vegeta attack -rate=100 -duration=5s | tee vegeta/result/result.bin
+	echo "GET http://localhost:8080/user/index" | vegeta attack -rate=500 -duration=10s | tee vegeta/result/result.bin
 
 stresult:
-	vegeta report vegeta/result/result.bin
+	vegeta report vegeta/result/result.bin | $(SLACKCAT)
 
 # ここまで -------------------------------------------------
 
@@ -127,6 +127,7 @@ kataru:
 pprof:
 	$(PPROF)
 	$(SLACKRAW) -n pprof.png ./pprof.png
+	mv pprof.png pprof/
 
 .PHONY: mysql
 mysql:

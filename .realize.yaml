@@ -15,6 +15,7 @@ schema:
   watcher:
     extensions:
     - go
+    - yml
     paths:
     - /
     ignored_paths:

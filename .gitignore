@@ -3,7 +3,7 @@ vendor/*
 bin/*
 vegeta/result/*
 nginx/log/*
+pprof/*
 !.gitkeep
 isucon
 kataribe.toml
-pprof.png

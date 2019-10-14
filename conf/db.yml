@@ -1,6 +1,11 @@
-driver: mysql
 development:
   host     : "db"
-  user: "root"
-  password: "pass"
-  db: "isucon"
+  port     : "3306"
+  user     : "root"
+  password : "pass"
+  db       : "isucon"
+  logmode  : false
+  Connection:
+    MaxOpenConnections          : 0
+    MaxIdleConnections          : 0
+    ConnectionMaxLifetimeMinutes: 1

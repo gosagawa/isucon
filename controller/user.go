@@ -2,6 +2,7 @@ package controller
 
 import (
 	"io/ioutil"
+	"time"
 
 	"github.com/jinzhu/gorm"
 	"github.com/wcl48/valval"
@@ -36,8 +37,9 @@ func init() {
 func UserIndex(c web.C, w http.ResponseWriter, r *http.Request) {
 	Users := []model.User{}
 	result := db.Find(&Users)
-	if !db.RecordNotFound() && result.Error == nil {
-		fmt.Println(result.Error)
+	if !db.RecordNotFound() && result.Error != nil {
+		fmt.Println(db.DB().Stats())
+		panic(result.Error)
 	}
 
 	tpl = template.Must(template.ParseFiles("view/user/index.html"))
@@ -110,12 +112,37 @@ func connect() {
 		panic(err)
 	}
 
-	t := make(map[interface{}]interface{})
+	type configConnection struct {
+		MaxOpenConnections           int `yaml:"MaxOpenConnections"`
+		MaxIdleConnections           int `yaml:"MaxIdleConnections"`
+		ConnectionMaxLifetimeMinutes int `yaml:"ConnectionMaxLifetimeMinutes"`
+	}
+	type configYml struct {
+		Host       string
+		Port       string
+		User       string
+		Password   string
+		Db         string
+		LogMode    bool
+		Connection configConnection `yaml:"Connection"`
+	}
+	t := make(map[string]configYml)
 
-	_ = yaml.Unmarshal([]byte(yml), &t)
+	err = yaml.Unmarshal([]byte(yml), &t)
+	if err != nil {
+		panic(err)
+	}
 
-	conn := t["development"].(map[interface{}]interface{})
-	db, err = gorm.Open("mysql", conn["user"].(string)+":"+conn["password"].(string)+"@tcp("+conn["host"].(string)+")/"+conn["db"].(string)+"?charset=utf8&parseTime=True")
+	config := t["development"]
+
+	db, err = gorm.Open("mysql", config.User+":"+config.Password+"@tcp("+config.Host+":"+config.Port+")/"+config.Db+"?loc=Asia%2FTokyo&parseTime=true&charset=utf8mb4")
+	if err != nil {
+		panic(err)
+	}
+	db.LogMode(config.LogMode)
+	db.DB().SetMaxOpenConns(config.Connection.MaxOpenConnections)
+	db.DB().SetMaxIdleConns(config.Connection.MaxIdleConnections)
+	db.DB().SetConnMaxLifetime(time.Duration(config.Connection.ConnectionMaxLifetimeMinutes) * time.Minute)
 	if err != nil {
 		panic(err)
 	}
