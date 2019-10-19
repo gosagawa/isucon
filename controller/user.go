@@ -37,10 +37,14 @@ func init() {
 func UserIndex(c web.C, w http.ResponseWriter, r *http.Request) {
 	Users := []model.User{}
 	result := db.Find(&Users)
+	dbStats := db.DB().Stats()
 	if !db.RecordNotFound() && result.Error != nil {
-		fmt.Println(db.DB().Stats())
-		panic(result.Error)
+		fmt.Printf("dbStats ERROR MaxOpenConnections:%v OpenConnections:%v InUse:%v Idle:%v WaitCount:%v WaitDuration:%v MaxIdleClosed:%v MaxLifetimeClosed:%v \n", dbStats.MaxOpenConnections, dbStats.OpenConnections, dbStats.InUse, dbStats.Idle, dbStats.WaitCount, dbStats.WaitDuration, dbStats.MaxIdleClosed, dbStats.MaxLifetimeClosed)
+		http.Error(w, result.Error.Error(), http.StatusInternalServerError)
+		return
 	}
+
+	fmt.Printf("dbStats OK MaxOpenConnections:%v OpenConnections:%v InUse:%v Idle:%v WaitCount:%v WaitDuration:%v MaxIdleClosed:%v MaxLifetimeClosed:%v \n", dbStats.MaxOpenConnections, dbStats.OpenConnections, dbStats.InUse, dbStats.Idle, dbStats.WaitCount, dbStats.WaitDuration, dbStats.MaxIdleClosed, dbStats.MaxLifetimeClosed)
 
 	tpl = template.Must(template.ParseFiles("view/user/index.html"))
 	tpl.Execute(w, Users)
@@ -115,7 +119,7 @@ func connect() {
 	type configConnection struct {
 		MaxOpenConnections           int `yaml:"MaxOpenConnections"`
 		MaxIdleConnections           int `yaml:"MaxIdleConnections"`
-		ConnectionMaxLifetimeMinutes int `yaml:"ConnectionMaxLifetimeMinutes"`
+		ConnectionMaxLifetimeSeconds int `yaml:"ConnectionMaxLifetimeSeconds"`
 	}
 	type configYml struct {
 		Host       string
@@ -139,11 +143,9 @@ func connect() {
 	if err != nil {
 		panic(err)
 	}
+
 	db.LogMode(config.LogMode)
 	db.DB().SetMaxOpenConns(config.Connection.MaxOpenConnections)
 	db.DB().SetMaxIdleConns(config.Connection.MaxIdleConnections)
-	db.DB().SetConnMaxLifetime(time.Duration(config.Connection.ConnectionMaxLifetimeMinutes) * time.Minute)
-	if err != nil {
-		panic(err)
-	}
+	db.DB().SetConnMaxLifetime(time.Duration(config.Connection.ConnectionMaxLifetimeSeconds) * time.Second)
 }

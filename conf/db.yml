@@ -6,6 +6,6 @@ development:
   db       : "isucon"
   logmode  : false
   Connection:
-    MaxOpenConnections          : 0
-    MaxIdleConnections          : 0
-    ConnectionMaxLifetimeMinutes: 1
+    MaxOpenConnections           : 0
+    MaxIdleConnections           : 1000
+    ConnectionMaxLifetimeSeconds : 1
