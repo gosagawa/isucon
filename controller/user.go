@@ -75,31 +75,76 @@ func UserCreate(c web.C, w http.ResponseWriter, r *http.Request) {
 
 // UserEdit ユーザ編集
 func UserEdit(c web.C, w http.ResponseWriter, r *http.Request) {
-	User := model.User{}
-	User.ID, _ = strconv.Atoi(c.URLParams["id"])
-	db.Find(&User)
+
+	id, err := strconv.Atoi(c.URLParams["id"])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	user, err := getUserInfo(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if user == nil {
+		http.Error(w, fmt.Sprintf("user not found ID:%v", id), http.StatusNotFound)
+		return
+	}
+
 	tpl = template.Must(template.ParseFiles("view/user/edit.html"))
-	tpl.Execute(w, FormData{User, ""})
+	tpl.Execute(w, FormData{*user, ""})
 }
 
 // UserUpdate ユーザ更新
 func UserUpdate(c web.C, w http.ResponseWriter, r *http.Request) {
-	User := model.User{}
-	User.ID, _ = strconv.Atoi(c.URLParams["id"])
-	db.Find(&User)
-	User.Name = r.FormValue("Name")
-	if err := model.UserValidate(User); err != nil {
+
+	id, err := strconv.Atoi(c.URLParams["id"])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	user, err := getUserInfo(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if user == nil {
+		http.Error(w, fmt.Sprintf("user not found ID:%v", id), http.StatusNotFound)
+		return
+	}
+
+	user.Name = r.FormValue("Name")
+	if err := model.UserValidate(*user); err != nil {
 		var Mess string
 		errs := valval.Errors(err)
 		for _, errInfo := range errs {
 			Mess += fmt.Sprint(errInfo.Error)
 		}
 		tpl = template.Must(template.ParseFiles("view/user/edit.html"))
-		tpl.Execute(w, FormData{User, Mess})
-	} else {
-		db.Save(&User)
-		http.Redirect(w, r, "/user/index", 301)
+		tpl.Execute(w, FormData{*user, Mess})
+		return
 	}
+
+	db.Save(&user)
+	http.Redirect(w, r, "/user/index", 301)
+}
+
+// getUserInfo ユーザ情報を取得する
+func getUserInfo(id int) (*model.User, error) {
+
+	u := model.User{}
+	db = db.First(&u, "id = ?", id)
+
+	if db.Error != nil {
+		if db.RecordNotFound() {
+			return nil, nil
+		}
+		return nil, db.Error
+	}
+
+	return &u, nil
 }
 
 // UserDelete ユーザ削除

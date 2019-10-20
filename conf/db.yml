@@ -4,7 +4,7 @@ development:
   user     : "root"
   password : "pass"
   db       : "isucon"
-  logmode  : false
+  logmode  : true
   Connection:
     MaxOpenConnections           : 0
     MaxIdleConnections           : 1000
