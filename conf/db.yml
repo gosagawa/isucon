@@ -7,5 +7,6 @@ development:
   logmode  : true
   Connection:
     MaxOpenConnections           : 0
-    MaxIdleConnections           : 1000
-    ConnectionMaxLifetimeSeconds : 1
+    MaxIdleConnections           : 0
+    ConnectionMaxLifetimeSeconds : 0
+

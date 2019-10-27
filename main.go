@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 	"net/http"
+	"runtime"
 
 	"net/http/pprof"
-	_ "net/http/pprof"
 
 	_ "github.com/go-sql-driver/mysql"
 
@@ -15,6 +15,9 @@ import (
 )
 
 func main() {
+	runtime.SetBlockProfileRate(1)
+	runtime.SetMutexProfileFraction(1)
+
 	flag.Set("bind", ":8080")
 	rooter(goji.DefaultMux)
 	goji.Serve()

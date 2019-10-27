@@ -40,7 +40,7 @@ sshproxy:
 
 .PHONY: st
 st:
-	echo "GET http://localhost:8080/user/index" | vegeta attack -rate=500 -duration=10s | tee vegeta/result/result.bin
+	echo "GET http://localhost:8080/user/index" | vegeta attack -rate=300 -duration=5s | tee vegeta/result/result.bin
 
 stresult:
 	vegeta report vegeta/result/result.bin | $(SLACKCAT)
