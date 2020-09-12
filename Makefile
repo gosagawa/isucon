@@ -84,7 +84,8 @@ bench: commit before build restart log
 
 .PHONY: log
 log: 
-	sudo journalctl -u isucari.golang -n10 -f
+	#TODO コマンド要修正
+	#sudo journalctl -u isucari.golang -n10 -f
 
 .PHONY: maji
 bench: commit before build restart
