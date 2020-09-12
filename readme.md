@@ -30,8 +30,10 @@ make ssh
 - slackcat
 
 slackcatインストール時には以下を聞かれるので入力してください。
-nickname for team:t (複数チームで使わないのであればなんでも良いの)
+```
+nickname for team:t (複数チームで使わないのであればなんでも良いが何か入れる必要あり)
 token issued:xoxp-XXXXXXX（事前準備で準備したslackcatのトークン）
+```
 
 その後.slackcatファイルを変更して、default_channnelに投稿したいチャンネルを設定する。
 
