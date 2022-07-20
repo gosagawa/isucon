@@ -28,6 +28,7 @@ make ssh
 - kataribe
 - myprofiler
 - slackcat
+- goose
 
 slackcatインストール時には以下を聞かれるので入力してください。
 ```
@@ -36,6 +37,19 @@ token issued:xoxp-XXXXXXX（事前準備で準備したslackcatのトークン�
 ```
 
 その後.slackcatファイルを変更して、default_channnelに投稿したいチャンネルを設定する。
+
+## DBの接続情報の修正
+- MakefileのDB接続設定を修正
+- goose用のdb/dbconf.ymlの設定修正
+
+## nginxの設定
+ログフォーマットを以下に修正
+```
+log_format with_time '$remote_addr - $remote_user [$time_local] '
+                     '"$request" $status $body_bytes_sent '
+                     '"$http_referer" "$http_user_agent" $request_time';
+access_log /var/log/nginx/access.log with_time;
+```
 
 ## pprofの設定
 このレポジトリ内では追加ずみですが、実際の競技ではpprofの設定を追加します。

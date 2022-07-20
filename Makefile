@@ -142,6 +142,17 @@ slow-on:
 slow-off:
 	sudo $(MYSQL_CMD) -e "set global slow_query_log = OFF;"
 
+.PHONY: goosecreate
+goosecreate:
+	goose create mod sql
+
+gooseup:
+	goose up
+
+.PHONY: goosedown
+goosedown:
+	goose down
+
 .PHONY: setup
 setup:
 	sudo apt install -y percona-toolkit dstat git unzip snapd
@@ -161,3 +172,6 @@ setup:
 	sudo mv slackcat /usr/local/bin/
 	sudo chmod +x /usr/local/bin/slackcat
 	slackcat --configure
+	go get -u github.com/pressly/goose/cmd/goose
+	go install github.com/pressly/goose/cmd/goose@latest
+	cp ~/go/bin/goose /usr/local/bin/
