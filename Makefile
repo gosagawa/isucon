@@ -157,7 +157,7 @@ setup:
 	rm myprofiler.linux_amd64.tar.gz
 	sudo mv myprofiler /usr/local/bin/
 	sudo chmod +x /usr/local/bin/myprofiler
-	wget https://github.com/bcicen/slackcat/releases/download/v1.5/slackcat-1.5-linux-amd64 -O slackcat
+	wget https://github.com/bcicen/slackcat/releases/download/v1.7.2/slackcat-1.7.2-linux-amd64 -O slackcat
 	sudo mv slackcat /usr/local/bin/
 	sudo chmod +x /usr/local/bin/slackcat
 	slackcat --configure
